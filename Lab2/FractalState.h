@@ -5,13 +5,8 @@ class FractalState {
 public:
     double centerX, centerY, zoomFactor;
 
-    static FractalState* GetInstance() {
-		if (instance == nullptr) {
-			instance = new FractalState();
-		}
-        return instance;
-    }
-
+    static FractalState* GetInstance();
+    
 private:
     FractalState() : centerX(0), centerY(0), zoomFactor(1.0) {}
     FractalState(const FractalState&) = delete;

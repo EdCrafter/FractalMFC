@@ -1,26 +1,35 @@
 
 // Lab2View.h : interface of the CLab2View class
-//
-
-#include "Lab2Doc.h"
-
 
 #pragma once
 
+#include "Lab2Doc.h"
+#include "Command.h"
+#include "FractalFacade.h"
+
+class FractalFacade;
+
+
 class CLab2View : public CView
 {
+
 protected: // create from serialization only
 	CLab2View() noexcept;
-	DECLARE_DYNCREATE(CLab2View);
+	DECLARE_DYNCREATE(CLab2View); 
+
+	FractalFacade facade;
 
 // Attributes
 public:
+	//FractalFacade fractalFacade;
 	CLab2Doc* GetDocument() const;
 
 
 // Operations
 public:
 	bool IsVisible(CPoint a);
+
+
 // Overrides
 public:
 	virtual void OnDraw(CDC* pDC);  // overridden to draw this view

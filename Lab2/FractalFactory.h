@@ -1,7 +1,11 @@
 #pragma once
 // Factory pattern
 #include <memory>
+
+
 #include "IFractal.h"
+
+class CLab2View;
 
 class FractalFactory {
 public:
@@ -10,12 +14,6 @@ public:
         Mandelbrot
     };
 
-    static std::unique_ptr<IFractal> CreateFractal(FractalType type) {
-        switch (type) {
-        case Koch: return std::make_unique<KochFractal>();
-        case Mandelbrot: return std::make_unique<MandelbrotFractal>();
-        default: return nullptr;
-        }
-    }
+    static std::unique_ptr<IFractal> CreateFractal(FractalType type,CLab2View* pView);
 };
 

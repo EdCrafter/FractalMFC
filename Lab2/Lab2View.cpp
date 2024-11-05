@@ -41,6 +41,7 @@ END_MESSAGE_MAP()
 CLab2View::CLab2View() noexcept
 {
 	// TODO: add construction code here
+
 }
 
 CLab2View::~CLab2View()
@@ -60,6 +61,7 @@ BOOL CLab2View::PreCreateWindow(CREATESTRUCT& cs)
 
 void CLab2View::OnDraw(CDC* pDC)
 {
+
 	CLab2Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
@@ -74,6 +76,8 @@ void CLab2View::OnDraw(CDC* pDC)
 	pDC->SetWindowExt(6000 * 1. / pDoc->zoomFactor, 6000 * 1. / pDoc->zoomFactor);
 	pDC->SetViewportExt(rect.Width(), -rect.Height());
 	pDC->SetViewportOrg(pDoc->centerX, pDoc->centerY);
+
+	facade.Draw(pDC);
 }
 
 
