@@ -5,19 +5,20 @@
 #include "FractalFactory.h"
 #include "FractalState.h"
 
-// Предварительное объявление класса
-class CLab2View;
 
 class FractalFacade {
 private:
-    std::unique_ptr<IFractal> fractal;
+	std::unique_ptr<IFractal> facadeFractal;
+	CLab2View* pView;
 
 public:
-    FractalFacade() = default; // Используем дефолтный конструктор
-
-    void SetFractalType(FractalFactory::FractalType type, CLab2View* pView);
+	FractalFacade() = default; // Конструктор по умолчанию
+    FractalFacade(const FractalFacade& other); // Конструктор копирования
+    FractalFacade(CLab2View* pView); // Конструктор с параметром
+	FractalFactory::FractalType GetType() ;
+    void SetFractalType(FractalFactory::FractalType type);
     void ZoomIn(double scale = 1);
     void ZoomOut(double scale = 1);
-    void Move(double dx, double dy);
+    void Move(double dx, double dy,double scale);
     void Draw(CDC* pDC);
 };

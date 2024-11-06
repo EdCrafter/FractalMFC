@@ -10,6 +10,7 @@ class CLab2View;
 class FractalFactory {
 public:
     enum FractalType {
+		Invalid = -1,
         Koch,
         Mandelbrot
     };

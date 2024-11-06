@@ -1,7 +1,7 @@
 
 // Lab2View.cpp : implementation of the CLab2View class
 //
-#include <omp.h>
+
 
 #include "pch.h"
 #include "framework.h"
@@ -33,12 +33,12 @@ BEGIN_MESSAGE_MAP(CLab2View, CView)
 	ON_WM_RBUTTONUP()
     ON_WM_LBUTTONDBLCLK()
 	ON_COMMAND(ID_FRACTAL_KOCH, &CLab2View::OnFractalKoch)
-	ON_COMMAND(ID_FRACTAL_MALD, &CLab2View::OnFractalMald)
+	ON_COMMAND(ID_FRACTAL_Mand, &CLab2View::OnFractalMand)
 END_MESSAGE_MAP()
 
 // CLab2View construction/destruction
 
-CLab2View::CLab2View() noexcept
+CLab2View::CLab2View() noexcept : facade(this)
 {
 	// TODO: add construction code here
 
@@ -66,16 +66,10 @@ void CLab2View::OnDraw(CDC* pDC)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-	pDC->SetMapMode(MM_ISOTROPIC);
-	CRect rect;
-	GetClientRect(&rect);
+	
 	/*CRgn clipRgn;
-	CreateRectRgn(-8000, -8000 * 1. / pDoc->zoomFactor, 8000 * 1. / pDoc->zoomFactor, 8000 * 1. / pDoc->zoomFactor);
+	CreateRectRgn(0, 0, rect.Width(), rect.Height());
 	pDC->SelectClipRgn(&clipRgn);*/
-
-	pDC->SetWindowExt(6000 * 1. / pDoc->zoomFactor, 6000 * 1. / pDoc->zoomFactor);
-	pDC->SetViewportExt(rect.Width(), -rect.Height());
-	pDC->SetViewportOrg(pDoc->centerX, pDoc->centerY);
 
 	facade.Draw(pDC);
 }
@@ -150,19 +144,8 @@ CLab2Doc* CLab2View::GetDocument() const // non-debug version is inline
 
 void CLab2View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	CLab2Doc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
-	if (!pDoc)
-		return;
-
-	CRect clientRect;
-	GetClientRect(&clientRect);
-
-	double scale = 1.4;
-	pDoc->zoomFactor *= scale;
-	pDoc->centerX = (-point.x + pDoc->centerX) * scale + clientRect.Width() / 2;
-	pDoc->centerY = (-point.y + pDoc->centerY) * scale + clientRect.Height() / 2;
-
+	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 1.4));
+	commandManager.ExecuteCommand(std::make_unique<MoveCommand>(facade,point.x, point.y,1.4));
 	Invalidate();
 }
 
@@ -199,24 +182,18 @@ bool CLab2View::IsVisible(CPoint a) {
 void CLab2View::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-	CLab2Doc* pDoc = GetDocument();
-	if (pDoc) {
-		CRect clientRect;
-		GetClientRect(&clientRect);
-		pDoc->centerX = clientRect.Width() / 2;
-		pDoc->centerY = clientRect.Height() / 2;
 	
-	}
 }
 
 
 void CLab2View::OnFractalKoch()
 {
-	// TODO: Add your command handler code here
+	facade.SetFractalType(FractalFactory::Koch);
+	Invalidate();
 }
 
-
-void CLab2View::OnFractalMald()
+void CLab2View::OnFractalMand()
 {
-	// TODO: Add your command handler code here
+	facade.SetFractalType(FractalFactory::Mandelbrot);
+	Invalidate();
 }

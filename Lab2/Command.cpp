@@ -1,32 +1,23 @@
 #include "pch.h"
 #include "Command.h"
-#include "FractalState.h"
+#include "FractalFacade.h"
 
 // Implementation of ZoomInCommand
-void ZoomInCommand::Execute() {
-    FractalState::GetInstance()->zoomFactor *= 1.4;
+ZoomCommand::ZoomCommand(FractalFacade& facade, double scale=1) : IFractalCommand(facade), scale(scale) {}
+void ZoomCommand::Execute() {
+	facade.ZoomIn(scale);
 }
 
-void ZoomInCommand::Undo() {
-    FractalState::GetInstance()->zoomFactor /= 1.4;
+void ZoomCommand::Undo() {
+	facade.ZoomOut(scale);
 }
 
-// Implementation of ZoomOutCommand
-void ZoomOutCommand::Execute() {
-    FractalState::GetInstance()->zoomFactor /= 1.4;
-}
-
-void ZoomOutCommand::Undo() {
-    FractalState::GetInstance()->zoomFactor *= 1.4;
-}
 
 // Implementation of MoveCommand constructor and methods
-MoveCommand::MoveCommand(double dx, double dy) : deltaX(dx), deltaY(dy) {}
+MoveCommand::MoveCommand(FractalFacade& facade, double dx, double dy, double scale = 1) : IFractalCommand(facade), deltaX(dx), deltaY(dy), scale(scale) {}
 
 void MoveCommand::Execute() {
-    FractalState* state = FractalState::GetInstance();
-    state->centerX += deltaX;
-    state->centerY += deltaY;
+	facade.Move(deltaX, deltaY, scale);
 }
 
 void MoveCommand::Undo() {
@@ -69,4 +60,19 @@ void CommandManager::Redo() {
         currentCommandIndex++;
         commandsHistory[currentCommandIndex]->Execute();
     }
+}
+
+SetFractalTypeCommand::SetFractalTypeCommand(FractalFacade& facade, FractalFactory::FractalType type) : IFractalCommand(facade)
+{
+	this->type = type;
+}
+
+void SetFractalTypeCommand::Execute()
+{
+	facade.SetFractalType(type);
+}
+
+void SetFractalTypeCommand::Undo()
+{
+	facade.SetFractalType(FractalFactory::FractalType::Invalid);
 }

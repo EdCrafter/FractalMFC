@@ -7,7 +7,6 @@
 #include "Command.h"
 #include "FractalFacade.h"
 
-class FractalFacade;
 
 
 class CLab2View : public CView
@@ -16,8 +15,9 @@ class CLab2View : public CView
 protected: // create from serialization only
 	CLab2View() noexcept;
 	DECLARE_DYNCREATE(CLab2View); 
-
+	
 	FractalFacade facade;
+	CommandManager commandManager;
 
 // Attributes
 public:
@@ -59,7 +59,7 @@ public:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	virtual void OnInitialUpdate();
 	afx_msg void OnFractalKoch();
-	afx_msg void OnFractalMald();
+	afx_msg void OnFractalMand();
 };
 
 #ifndef _DEBUG  // debug version in Lab2View.cpp
