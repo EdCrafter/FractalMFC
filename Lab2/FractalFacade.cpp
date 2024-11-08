@@ -78,11 +78,10 @@ void FractalFacade::Move(double dx, double dy,double scale=1) {
 		return;
 	}
 	else if (type==1) {
-		CString str;
-		str.Format(L"dx=%f, dy=%f , scale=%f , cX=%f, cY=%f", dx, dy, scale, state->centerWX, state->centerWY);
-		AfxMessageBox(str);
-		state->centerWX = -dx;// +state->centerWX;
-		state->centerWY = -dy;// +state->centerWY;
+		CRect clientRect;
+		pView->GetWindowDC()->GetClipBox(&clientRect);
+		state->centerWX = (dx - clientRect.Width() / 2 + state->centerWX ) * scale;
+		state->centerWY = ( - dy + clientRect.Height() / 2 + state->centerWY)* scale;
 		return;
 	}
     

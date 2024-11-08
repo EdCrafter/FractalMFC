@@ -121,6 +121,7 @@ KochFractal::KochFractal(CLab2View* pView) : IFractal(pView)
 		state->centerWX =  rect.Width() / 2;
 		state->centerWY =  rect.Height() / 2;
     }
+	state->zoomFactor = 1;
 	state->depth = 5;
 	state->maxDepth = 7;
 }
@@ -132,12 +133,14 @@ int KochFractal::GetType() const
 
 KochFractal::KochFractal(const KochFractal&)
 {
+	//AfxMessageBox(L"Copy constructor");
 	this->pView = pView;
 	this->state = state;
 }
 
 std::unique_ptr<IFractal> KochFractal::Clone() const
 {
+	//AfxMessageBox(L"Clone");
 	return std::make_unique<KochFractal>(*this);
 }
 
@@ -215,72 +218,77 @@ bool KochFractal::IsVisible(CDC* pDC, CPoint a)
 
 void MandelbrotFractal::Draw(CDC* pDC)
 {
+	if (!pView) {
+		AfxMessageBox(L"Error: pView is nullptr");
+		return;
+	}
 	CRect rect;
 	pView->GetClientRect(&rect);
-
+	if (rect.Width() == 0 || rect.Height() == 0) {
+		AfxMessageBox(L"Error: rect.Width() == 0 || rect.Height() == 0");
+		return;
+	}
 	pDC->SetMapMode(MM_ISOTROPIC);
 	pDC->SetWindowExt(1, 1);
-	pDC->SetViewportExt(rect.Width(), -rect.Height()); // Invert y-axis
-
-	// Center the viewport according to the Mandelbrot fractal's center
-	pDC->SetViewportOrg(state->centerWX, state->centerWY);
-
-    
-    const int maxIterations = 500; // Увеличьте количество итераций
+	pDC->SetViewportExt(rect.Width(), rect.Height());
+	pDC->SetViewportOrg(0,0);
+	const int maxIterations = 500; // Number of iterations for Mandelbrot calculation
 	double scaleX = 4.0 / state->zoomFactor / rect.Width();
 	double scaleY = 4.0 / state->zoomFactor / rect.Height();
-	double minX = -2.0 + state->centerWX * scaleX;
-	double minY = -2.0 + state->centerWY * scaleY;
 
-    // Используем массив для хранения цветов
-    std::vector<unsigned char> pixels(rect.Width() * rect.Height() * 4); // 4 байта на пиксель (RGBA)
+	double minX = -2.0 + (state->centerWX - rect.Width() / 2) * scaleX;
+	double minY = -2.0 + (state->centerWY - rect.Height() / 2) * scaleY;
+
+	// The rest of the Mandelbrot drawing code
+	std::vector<unsigned char> pixels(rect.Width() * rect.Height() * 4); // RGBA array
+
 #pragma omp parallel for
-    for (int py = 0; py < rect.Height(); ++py) {
-        for (int px = 0; px < rect.Width(); ++px) {
-            double x0 = minX + px * scaleX;
-            double y0 = minY + py * scaleY;
-            double x = 0.0, y = 0.0;
-            int iteration = 0;
+	for (int py = 0; py < rect.Height(); ++py) {
+		for (int px = 0; px < rect.Width(); ++px) {
+			double x0 = minX + px * scaleX;
+			double y0 = minY + py * scaleY;
+			double x = 0.0, y = 0.0;
+			int iteration = 0;
 
-            while (x * x + y * y <= 4 && iteration < maxIterations) {
-                double xTemp = x * x - y * y + x0;
-                y = 2 * x * y + y0;
-                x = xTemp;
-                iteration++;
-            }
+			while (x * x + y * y <= 4 && iteration < maxIterations) {
+				double xTemp = x * x - y * y + x0;
+				y = 2 * x * y + y0;
+				x = xTemp;
+				iteration++;
+			}
 
-            unsigned char* pixel = &pixels[(py * rect.Width() + px) * 4]; // 4 байта на пиксель
-            if (iteration < maxIterations) {
-                pixel[0] = (iteration % 256);     // Red
-                pixel[1] = (iteration % 128);     // Green
-                pixel[2] = (iteration % 64);      // Blue
-                pixel[3] = 255;                   // Alpha
-            }
-            else {
-                pixel[0] = 0;  // Red
-                pixel[1] = 0;  // Green
-                pixel[2] = 0;  // Blue
-                pixel[3] = 255; // Alpha
-            }
-        }
-    }
+			unsigned char* pixel = &pixels[(py * rect.Width() + px) * 4];
+			if (iteration < maxIterations) {
+				pixel[0] = (iteration % 256); // Red
+				pixel[1] = (iteration % 128); // Green
+				pixel[2] = (iteration % 64);  // Blue
+				pixel[3] = 255;               // Alpha
+			}
+			else {
+				pixel[0] = 0;   // Red
+				pixel[1] = 0;   // Green
+				pixel[2] = 0;   // Blue
+				pixel[3] = 255; // Alpha
+			}
+		}
+	}
 
-    // Отрисовка
-    BITMAPINFO bmi;
-    memset(&bmi, 0, sizeof(bmi));
-    bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
-    bmi.bmiHeader.biWidth = rect.Width();
-    bmi.bmiHeader.biHeight = -rect.Height(); // негативное значение для правильной ориентации
-    bmi.bmiHeader.biPlanes = 1;
-    bmi.bmiHeader.biBitCount = 32;
-    bmi.bmiHeader.biCompression = BI_RGB;
+	// Render the pixel data
+	BITMAPINFO bmi;
+	memset(&bmi, 0, sizeof(bmi));
+	bmi.bmiHeader.biSize = sizeof(bmi.bmiHeader);
+	bmi.bmiHeader.biWidth = rect.Width();
+	bmi.bmiHeader.biHeight = rect.Height(); 
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 32;
+	bmi.bmiHeader.biCompression = BI_RGB;
 
-    ::SetDIBitsToDevice(
-        pDC->GetSafeHdc(),
-        0, 0, rect.Width(), rect.Height(),
-        0, 0, 0, rect.Height(),
-        pixels.data(), &bmi, DIB_RGB_COLORS
-    );
+	::SetDIBitsToDevice(
+		pDC->GetSafeHdc(),
+		0, 0, rect.Width(), rect.Height(),
+		0, 0, 0, rect.Height(),
+		pixels.data(), &bmi, DIB_RGB_COLORS
+	);
 }
 
 int MandelbrotFractal::GetType() const
@@ -299,16 +307,16 @@ IFractal::IFractal(const IFractal&)
 	this->state = state;
 }
 
-MandelbrotFractal::MandelbrotFractal(CLab2View* pView)
+MandelbrotFractal::MandelbrotFractal(CLab2View* pView) : IFractal(pView)
 {
 	CLab2Doc* pDoc = pView->GetDocument();
 	if (pDoc) {
 		CRect rect;
 		pView->GetClientRect(&rect);
 		state->centerWX = rect.Width() / 2;
-		state->centerWY = rect.Height() / 2;
-		
+		state->centerWY = rect.Height() /2;
 	}
+	state->zoomFactor = 1;
 	state->depth = 5;
 	state->maxDepth = 700;
 }

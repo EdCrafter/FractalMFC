@@ -144,8 +144,8 @@ CLab2Doc* CLab2View::GetDocument() const // non-debug version is inline
 
 void CLab2View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 1.4));
-	commandManager.ExecuteCommand(std::make_unique<MoveCommand>(facade,point.x, point.y,1.4));
+	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 4));
+	commandManager.ExecuteCommand(std::make_unique<MoveCommand>(facade,point.x, point.y,4));
 	Invalidate();
 }
 
