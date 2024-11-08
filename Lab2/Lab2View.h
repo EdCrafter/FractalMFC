@@ -27,8 +27,6 @@ public:
 
 // Operations
 public:
-	bool IsVisible(CPoint a);
-
 
 // Overrides
 public:

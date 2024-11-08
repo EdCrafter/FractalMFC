@@ -44,12 +44,19 @@ FractalFactory::FractalType FractalFacade::GetType(){
 
 // Метод для увеличения масштаба
 void FractalFacade::ZoomIn(double scale) {
-    FractalState::GetInstance()->zoomFactor *= scale;
+	//AfxMessageBox(L"ZoomIn");
+	if (FractalState::GetInstance()->depth && FractalState::GetInstance()->depth < FractalState::GetInstance()->maxDepth) {
+		FractalState::GetInstance()->zoomFactor *= scale;
+		FractalState::GetInstance()->depth++;
+	}
 }
 
 // Метод для уменьшения масштаба
 void FractalFacade::ZoomOut(double scale) {
-    FractalState::GetInstance()->zoomFactor /= scale;
+	if (FractalState::GetInstance()->depth >= 2) {
+		FractalState::GetInstance()->zoomFactor *= 1 / scale;
+		FractalState::GetInstance()->depth--;
+	}
 }
 
 // Метод для перемещения
@@ -58,14 +65,24 @@ void FractalFacade::Move(double dx, double dy,double scale=1) {
     FractalFactory::FractalType type = this->GetType();
 	if (type==0) {
         CRect clientRect;
-        pView->GetClientRect(&clientRect);
-        state->centerX = (-dx + state->centerX) * scale + clientRect.Width() / 2;
-        state->centerY = (-dy + state->centerY) * scale + clientRect.Height() / 2;
+		pView->GetWindowDC()->GetClipBox(&clientRect);
+        
+		if (FractalState::GetInstance()->depth >= FractalState::GetInstance()->maxDepth) {
+			state->centerWX = -dx + state->centerWX + clientRect.Width() / 2;
+			state->centerWY = -dy + state->centerWY + clientRect.Height() / 2;
+		}
+		else {
+			state->centerWX = (-dx + state->centerWX) * scale + clientRect.Width() / 2;
+			state->centerWY = (-dy + state->centerWY) * scale + clientRect.Height() / 2;
+		}
 		return;
 	}
 	else if (type==1) {
-		state->centerX += dx;
-		state->centerY += dy;
+		CString str;
+		str.Format(L"dx=%f, dy=%f , scale=%f , cX=%f, cY=%f", dx, dy, scale, state->centerWX, state->centerWY);
+		AfxMessageBox(str);
+		state->centerWX = -dx;// +state->centerWX;
+		state->centerWY = -dy;// +state->centerWY;
 		return;
 	}
     

@@ -22,8 +22,8 @@ void MoveCommand::Execute() {
 
 void MoveCommand::Undo() {
     FractalState* state = FractalState::GetInstance();
-    state->centerX -= deltaX;
-    state->centerY -= deltaY;
+    state->centerWX -= deltaX;
+    state->centerWY -= deltaY;
 }
 
 // Implementation of CommandManager constructor and methods

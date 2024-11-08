@@ -36,14 +36,15 @@ public:
     void Draw(CDC* pDC) override;
     void DrawKochSnowflake(CDC* pDC, CPoint start, CPoint end, int depth, std::vector<CPoint>& points);
     void DrawSnowflakeAndFill(CDC* pDC, CPoint vertex1, CPoint vertex2, CPoint vertex3, int depth);
-
+    bool IsVisible(CDC* pDC,CPoint p);
+    void DrawKochSnowflakeIterative(CDC* pDC, CPoint start, CPoint end, int depth, std::vector<CPoint>& points);
 };
 
 class MandelbrotFractal : public IFractal {
 
 public:
     MandelbrotFractal() = default;
-	explicit MandelbrotFractal(CLab2View* pView) : IFractal(pView) {}
+    explicit MandelbrotFractal(CLab2View* pView);
 	std::unique_ptr<IFractal> Clone() const override;
     void Draw(CDC* pDC) override;
     int GetType() const override;

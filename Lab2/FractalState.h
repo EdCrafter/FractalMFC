@@ -3,12 +3,13 @@
 class FractalState {
     static FractalState* instance;
 public:
-    double centerX, centerY, zoomFactor;
+    double centerWX, centerWY, zoomFactor;
+    int depth, maxDepth;
 
     static FractalState* GetInstance();
     
 private:
-    FractalState() : centerX(0), centerY(0), zoomFactor(1.0) {}
+	FractalState() : centerWX(0), centerWY(0), zoomFactor(1), depth(1), maxDepth(-1) {}
     FractalState(const FractalState&) = delete;
     FractalState& operator=(const FractalState&) = delete;
 };

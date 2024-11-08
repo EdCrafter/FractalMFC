@@ -149,35 +149,6 @@ void CLab2View::OnLButtonDblClk(UINT nFlags, CPoint point)
 	Invalidate();
 }
 
-bool CLab2View::IsVisible(CPoint a) {
-	CLab2Doc* pDoc = GetDocument();
-	CRect clientRect;
-	GetClientRect(&clientRect);
-	if (clientRect.Width() == 0 || clientRect.Height() == 0) {
-		return false;
-	}
-	double offsetX = pDoc->centerX - clientRect.Width() / 2;
-	double offsetY = pDoc->centerY - clientRect.Height() / 2;
-
-	// Обновляем границы видимой области
-	offsetX = offsetX / pDoc->zoomFactor;
-	offsetY = offsetY / pDoc->zoomFactor;
-
-	CRect visibleRect;
-	visibleRect.SetRect(
-		(-offsetX - clientRect.Width() * 2), // Левый край
-		(offsetY - clientRect.Height() * 2), // Верхний край
-		(-offsetX + clientRect.Width() * 2), // Правый край
-		(offsetY + clientRect.Height() * 2)  // Нижний край
-	);
-	return visibleRect.PtInRect(a);
-};
-
-
-
-
-
-
 
 void CLab2View::OnInitialUpdate()
 {

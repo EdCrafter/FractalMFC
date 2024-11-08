@@ -5,22 +5,75 @@
 #include "Lab2View.h"
 #include "Lab2Doc.h"
 
+#include <stack>
+#include <tuple>
+
 
 #define M_PI 3.14159265358979323846
 
+void KochFractal::DrawKochSnowflakeIterative(CDC* pDC, CPoint start, CPoint end, int depth, std::vector<CPoint>& points) {
+	std::stack<std::tuple<CPoint, CPoint, int>> stack;
+	stack.push(std::make_tuple(start, end, depth));
 
+	while (!stack.empty()) {
+		auto [currentStart, currentEnd, currentDepth] = stack.top();
+		stack.pop();
+
+		if (currentDepth == 0) {
+			points.push_back(currentStart);
+			points.push_back(currentEnd);
+		}
+		else {
+			CPoint p1((2 * currentStart.x + currentEnd.x) / 3, (2 * currentStart.y + currentEnd.y) / 3);
+			CPoint p2((currentStart.x + 2 * currentEnd.x) / 3, (currentStart.y + 2 * currentEnd.y) / 3);
+
+			double angle = atan2(currentEnd.y - currentStart.y, currentEnd.x - currentStart.x) + M_PI / 3;
+			double length = sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+			CPoint peak(p1.x + length * cos(angle), p1.y + length * sin(angle));
+
+			stack.push(std::make_tuple(p2, currentEnd, currentDepth - 1));
+			stack.push(std::make_tuple(peak, p2, currentDepth - 1));
+			stack.push(std::make_tuple(p1, peak, currentDepth - 1));
+			stack.push(std::make_tuple(currentStart, p1, currentDepth - 1));
+		}
+	}
+}
 
 void KochFractal::DrawKochSnowflake(CDC* pDC, CPoint start, CPoint end, int depth, std::vector<CPoint>& points)
 {
 	if (depth == 0) {
 		// Если видим, добавляем конечные точки в массив
 		
-		if (pView->IsVisible(start) || pView->IsVisible(end)) {
+		//if (IsVisible(pDC, start) || IsVisible(pDC, end)) { // IsVisible - true always
 			points.push_back(start);
 			points.push_back(end);
-			/*pDC->MoveTo(start);
-			pDC->LineTo(end);*/
-		}
+		//}
+		/*
+		else {
+			CRect clientRect;
+			pView->GetClientRect(&clientRect);
+			double cx, cy;
+			if (end.x < 0 || end.y < 0) {
+				cx = -clientRect.Width() / 2;
+				cy = clientRect.Height() / 2;
+			}
+			else if (end.x < 0) {
+				cx = -clientRect.Width() / 2;
+				cy = -clientRect.Height() / 2;
+			}
+			else if (end.y < 0) {
+				cx = clientRect.Width() / 2;
+				cy = clientRect.Height() / 2;
+			}
+			else {
+				cx = clientRect.Width() / 2;
+				cy = -clientRect.Height() / 2;
+			}
+			CPoint p(cx, cy);
+			if (points.size() > 0 && points.back() != p) {
+				points.push_back(p);
+			}
+		}*/
 	}
 	else {
 		CPoint p1((2 * start.x + end.x) / 3, (2 * start.y + end.y) / 3);
@@ -34,7 +87,6 @@ void KochFractal::DrawKochSnowflake(CDC* pDC, CPoint start, CPoint end, int dept
 		DrawKochSnowflake(pDC, peak, p2, depth - 1, points);
 		DrawKochSnowflake(pDC, p2, end, depth - 1, points);
 	}
-	/*pDC->SelectObject(pOldPen);*/
 }
 
 void KochFractal::DrawSnowflakeAndFill(CDC* pDC, CPoint vertex1, CPoint vertex2, CPoint vertex3, int depth)
@@ -44,6 +96,9 @@ void KochFractal::DrawSnowflakeAndFill(CDC* pDC, CPoint vertex1, CPoint vertex2,
 	DrawKochSnowflake(pDC, vertex1, vertex2, depth, points);
 	DrawKochSnowflake(pDC, vertex2, vertex3, depth, points);
 	DrawKochSnowflake(pDC, vertex3, vertex1, depth, points);
+	/*DrawKochSnowflakeIterative(pDC, vertex1, vertex2, depth, points);
+	DrawKochSnowflakeIterative(pDC, vertex2, vertex3, depth, points);
+	DrawKochSnowflakeIterative(pDC, vertex3, vertex1, depth, points);*/
 
 	if (points.size() > 2) {
 		CBrush brush(RGB(30, 150, 155));
@@ -61,11 +116,13 @@ KochFractal::KochFractal(CLab2View* pView) : IFractal(pView)
 {
     CLab2Doc* pDoc = pView->GetDocument();
     if (pDoc) {
-        CRect clientRect;
-        pView->GetClientRect(&clientRect);
-		state->centerX = clientRect.Width() / 2;
-		state->centerY = clientRect.Height() / 2;
+		CRect rect;
+		pView->GetClientRect(&rect);
+		state->centerWX =  rect.Width() / 2;
+		state->centerWY =  rect.Height() / 2;
     }
+	state->depth = 5;
+	state->maxDepth = 7;
 }
 
 int KochFractal::GetType() const
@@ -86,35 +143,94 @@ std::unique_ptr<IFractal> KochFractal::Clone() const
 
 void KochFractal::Draw(CDC* pDC)
 {
-
+	//AfxMessageBox(L"Draw");
     CRect rect;
     pView->GetClientRect(&rect);
     
+	double sizeKoch = 2000 * state->depth* state->depth + 500;
     pDC->SetMapMode(MM_ISOTROPIC);
-    pDC->SetWindowExt(6000 * 1. / state->zoomFactor, 6000 * 1. / state->zoomFactor);
+    pDC->SetWindowExt(sizeKoch *  1./state->zoomFactor, sizeKoch * 1. / state->zoomFactor);
     pDC->SetViewportExt(rect.Width(), -rect.Height());
-	pDC->SetViewportOrg(state->centerX, state->centerY);
+	pDC->SetViewportOrg(state->centerWX, state->centerWY);
+	double p1 = sizeKoch / 3.; 
+	double p2 = sizeKoch  /  (3 * sqrt(3));
 
-	CPoint vertex1(-2400, 1200);
-	CPoint vertex2(2400, 1200);
-	CPoint vertex3(0, -2400);
-	int depth = 6;
-	DrawSnowflakeAndFill(pDC, vertex1, vertex2, vertex3, depth);
+	CPoint vertex1(-p1, p2);
+	CPoint vertex2(p1, p2);
+	CPoint vertex3(0, -2*p2); 
+
+	DrawSnowflakeAndFill(pDC, vertex1, vertex2, vertex3, state->depth);
+	
+}
+
+bool KochFractal::IsVisible(CDC* pDC, CPoint a)
+{
+	return true;
+
+	CRect clientRect;
+	//pView->Get
+	// Получаем размеры области отображения с учетом ViewportExt
+	pDC->GetClipBox(&clientRect);
+	CRect rect;
+	pView->GetClientRect(&rect);
+
+	if (clientRect.Width() == 0 || clientRect.Height() == 0) {
+		AfxMessageBox(_T("Ошибка: размеры области отображения равны нулю"));
+		return false;
+	}
+	
+	double offsetX ;
+	double offsetY ;
+
+	if (state->zoomFactor == 1) {
+		offsetX = 0;
+		offsetY = 0;
+	}
+	else {
+		offsetX = (rect.Width() /2. - state->centerWX ) * clientRect.Width() / rect.Width();
+		offsetY = (rect.Height()/2. - state->centerWY) * clientRect.Height() / rect.Height();
+	}
+	
+	CRect visibleRect;
+	visibleRect.SetRect(
+		1 * (offsetX-clientRect.Width() / 2  ), //  * state->zoomFactor  Левый край
+		1.6 * (offsetY - clientRect.Height() / 2), // * state->zoomFactor   Верхний край
+		1 * (offsetX + clientRect.Width() / 2), //  * state->zoomFactor  Правый край
+		1.6 * (offsetY + clientRect.Height() / 2)  //  * state->zoomFactor  Нижний край
+	);
+	CPen pen(PS_SOLID, 15, RGB(35, 120, 120));
+	pDC->SelectObject(&pen);
+	pDC->MoveTo(visibleRect.left, visibleRect.top);
+	pDC->LineTo(visibleRect.right, visibleRect.top);
+	pDC->LineTo(visibleRect.right, visibleRect.bottom);
+	pDC->LineTo(visibleRect.left, visibleRect.bottom);
+	pDC->LineTo(visibleRect.left, visibleRect.top);
+	pDC->SelectObject(pDC->GetCurrentPen());
+
+	if (a.x >= visibleRect.left && a.x <= visibleRect.right && a.y <= visibleRect.top && a.y >= visibleRect.bottom) {
+		return true;
+	}
+	return false;
 }
 
 void MandelbrotFractal::Draw(CDC* pDC)
 {
-    pDC->SetMapMode(MM_TEXT);
-    pDC->SetWindowExt(1, 1);
-    pDC->SetViewportExt(1, 1);
+	CRect rect;
+	pView->GetClientRect(&rect);
 
-    CRect rect;
-    pView->GetClientRect(&rect);
+	pDC->SetMapMode(MM_ISOTROPIC);
+	pDC->SetWindowExt(1, 1);
+	pDC->SetViewportExt(rect.Width(), -rect.Height()); // Invert y-axis
+
+	// Center the viewport according to the Mandelbrot fractal's center
+	pDC->SetViewportOrg(state->centerWX, state->centerWY);
+
+    
     const int maxIterations = 500; // Увеличьте количество итераций
 	double scaleX = 4.0 / state->zoomFactor / rect.Width();
 	double scaleY = 4.0 / state->zoomFactor / rect.Height();
-	double minX = -2.0 + state->centerX * scaleX;
-	double minY = -2.0 + state->centerY * scaleY;
+	double minX = -2.0 + state->centerWX * scaleX;
+	double minY = -2.0 + state->centerWY * scaleY;
 
     // Используем массив для хранения цветов
     std::vector<unsigned char> pixels(rect.Width() * rect.Height() * 4); // 4 байта на пиксель (RGBA)
@@ -181,4 +297,18 @@ IFractal::IFractal(const IFractal&)
 {
 	this->pView = pView;
 	this->state = state;
+}
+
+MandelbrotFractal::MandelbrotFractal(CLab2View* pView)
+{
+	CLab2Doc* pDoc = pView->GetDocument();
+	if (pDoc) {
+		CRect rect;
+		pView->GetClientRect(&rect);
+		state->centerWX = rect.Width() / 2;
+		state->centerWY = rect.Height() / 2;
+		
+	}
+	state->depth = 5;
+	state->maxDepth = 700;
 }
