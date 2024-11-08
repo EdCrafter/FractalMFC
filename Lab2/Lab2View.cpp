@@ -34,6 +34,7 @@ BEGIN_MESSAGE_MAP(CLab2View, CView)
     ON_WM_LBUTTONDBLCLK()
 	ON_COMMAND(ID_FRACTAL_KOCH, &CLab2View::OnFractalKoch)
 	ON_COMMAND(ID_FRACTAL_Mand, &CLab2View::OnFractalMand)
+	ON_COMMAND(ID_ToolBack, &CLab2View::OnToolback)
 END_MESSAGE_MAP()
 
 // CLab2View construction/destruction
@@ -144,8 +145,7 @@ CLab2Doc* CLab2View::GetDocument() const // non-debug version is inline
 
 void CLab2View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 4));
-	commandManager.ExecuteCommand(std::make_unique<MoveCommand>(facade,point.x, point.y,4));
+	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, point.x, point.y, 4));
 	Invalidate();
 }
 
@@ -166,5 +166,12 @@ void CLab2View::OnFractalKoch()
 void CLab2View::OnFractalMand()
 {
 	facade.SetFractalType(FractalFactory::Mandelbrot);
+	Invalidate();
+}
+
+
+void CLab2View::OnToolback()
+{
+	commandManager.Undo();
 	Invalidate();
 }

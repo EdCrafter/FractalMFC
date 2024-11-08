@@ -3,13 +3,28 @@
 #include "FractalFacade.h"
 
 // Implementation of ZoomInCommand
-ZoomCommand::ZoomCommand(FractalFacade& facade, double scale=1) : IFractalCommand(facade), scale(scale) {}
+int ZoomCommand::countFMove = 0;
+
+ZoomCommand::ZoomCommand(FractalFacade& facade, double dx, double dy, double scale = 1) : IFractalCommand(facade), deltaX(dx), deltaY(dy), scale(scale) {}
 void ZoomCommand::Execute() {
-	facade.ZoomIn(scale);
+    if (facade.ZoomIn(scale)) {
+	    facade.Move(deltaX, deltaY, scale);
+    }
+    else {
+	    facade.Move(deltaX, deltaY, 1);
+        countFMove++;
+    }
 }
 
 void ZoomCommand::Undo() {
-	facade.ZoomOut(scale);
+	if (countFMove > 0) {
+	    facade.MoveOut(deltaX, deltaY, 1);
+        countFMove--;
+	}
+	else {
+		facade.ZoomOut(scale);
+		facade.MoveOut(deltaX, deltaY, scale);
+	}
 }
 
 

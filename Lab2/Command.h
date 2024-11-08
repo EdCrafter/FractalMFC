@@ -18,9 +18,10 @@ public:
 
 // ZoomInCommand - for zooming in
 class ZoomCommand : public IFractalCommand {
-	double scale;
+	double deltaX, deltaY, scale;
+    static int countFMove;
 public:
-	ZoomCommand(FractalFacade& facade, double scale);
+	ZoomCommand(FractalFacade& facade, double dx, double dy, double scale);
     void Execute() override;
     void Undo() override;
 };

@@ -58,6 +58,7 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnFractalKoch();
 	afx_msg void OnFractalMand();
+	afx_msg void OnToolback();
 };
 
 #ifndef _DEBUG  // debug version in Lab2View.cpp

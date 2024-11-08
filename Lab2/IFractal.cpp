@@ -123,7 +123,8 @@ KochFractal::KochFractal(CLab2View* pView) : IFractal(pView)
     }
 	state->zoomFactor = 1;
 	state->depth = 5;
-	state->maxDepth = 7;
+	state->minDepth = 5;
+	state->maxDepth = 9;
 }
 
 int KochFractal::GetType() const
@@ -150,7 +151,7 @@ void KochFractal::Draw(CDC* pDC)
     CRect rect;
     pView->GetClientRect(&rect);
     
-	double sizeKoch = 2000 * state->depth* state->depth + 500;
+	double sizeKoch = 3000 * state->depth* state->depth + 500;
     pDC->SetMapMode(MM_ISOTROPIC);
     pDC->SetWindowExt(sizeKoch *  1./state->zoomFactor, sizeKoch * 1. / state->zoomFactor);
     pDC->SetViewportExt(rect.Width(), -rect.Height());
