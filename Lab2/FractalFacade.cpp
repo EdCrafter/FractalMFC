@@ -44,9 +44,17 @@ FractalFactory::FractalType FractalFacade::GetType(){
 
 // Метод для увеличения масштаба
 bool FractalFacade::ZoomIn(double scale) {
+	if (scale < 1) {
+		if (FractalState::GetInstance()->depth <= FractalState::GetInstance()->minDepth) {
+			return false;
+		}
+		FractalState::GetInstance()->depth--;
+	}
 	if (FractalState::GetInstance()->depth && FractalState::GetInstance()->depth < FractalState::GetInstance()->maxDepth) {
 		FractalState::GetInstance()->zoomFactor *= scale;
-		FractalState::GetInstance()->depth++;
+		if (scale > 1) {
+			FractalState::GetInstance()->depth++;
+		}
 		return true;
 	}
 	return false;
@@ -62,19 +70,25 @@ bool FractalFacade::ZoomOut(double scale) {
 }
 
 // Метод для перемещения
-void FractalFacade::Move(double dx, double dy,double scale=1) {
+void FractalFacade::Move(double dx, double dy,double scale=1,bool centered=false) {
     FractalState* state = FractalState::GetInstance();
     FractalFactory::FractalType type = this->GetType();
+	CRect clientRect;
+	pView->GetWindowDC()->GetClipBox(&clientRect);
 	if (type==0) {
-        CRect clientRect;
-		pView->GetWindowDC()->GetClipBox(&clientRect);	
+		if (centered) {
+			dx = clientRect.Width() / 2;
+			dy = clientRect.Height() / 2;
+		}
 		state->centerWX = (-dx + state->centerWX) * scale + clientRect.Width() / 2;
 		state->centerWY = (-dy + state->centerWY) * scale + clientRect.Height() / 2;
 		return;
 	}
 	else if (type==1) {
-		CRect clientRect;
-		pView->GetWindowDC()->GetClipBox(&clientRect);
+		if (centered) {
+			dx = clientRect.Width() / 2;
+			dy = clientRect.Height() / 2;
+		}
 		state->centerWX = (dx - clientRect.Width() / 2 + state->centerWX ) * scale;
 		state->centerWY = ( - dy + clientRect.Height() / 2 + state->centerWY)* scale;
 		return;
@@ -91,20 +105,35 @@ void FractalFacade::Draw(CDC* pDC) {
     }
 }
 
-void FractalFacade::MoveOut(double dx, double dy, double scale)
+void FractalFacade::Reset()
+{
+	facadeFractal->Reset();
+}
+
+void FractalFacade::MoveOut(double dx, double dy, double scale,bool centered = false)
 {
 	FractalState* state = FractalState::GetInstance();
 	FractalFactory::FractalType type = this->GetType();
+
+	CRect clientRect;
+	pView->GetWindowDC()->GetClipBox(&clientRect);
+	CRect rect;
+	pView->GetClientRect(&rect);
 	if (type == 0) {
-		CRect clientRect;
-		pView->GetWindowDC()->GetClipBox(&clientRect);
+		if (centered) {
+			dx = clientRect.Width() / 2 ;
+			dy = clientRect.Height() / 2;
+		}
 		state->centerWX = (state->centerWX - clientRect.Width() / 2)/scale+dx;
 		state->centerWY = (state->centerWY - clientRect.Height() / 2) / scale + dy;
 		return;
 	}
 	else if (type == 1) {
-		CRect clientRect;
-		pView->GetWindowDC()->GetClipBox(&clientRect);
+		if (centered) {
+			dx = clientRect.Width() / 2;
+			dy = clientRect.Height() / 2;
+			scale = 1 / scale;
+		}
 		state->centerWX = state->centerWX / scale - dx + clientRect.Width() / 2;
 		state->centerWY = state->centerWY / scale + dy - clientRect.Height() / 2;
 		return;

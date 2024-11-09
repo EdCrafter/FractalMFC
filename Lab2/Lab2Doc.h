@@ -14,9 +14,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	double centerWX = 0.0;   // Центр области по оси X
-	double centerWY = 0.0;    // Центр области по оси Y
-	double zoomFactor = 1.0; // Уровень зума (начальное значение)
+	double zoomFactor = 4.0; // Уровень зума (начальное значение)
 
 // Operations
 public:

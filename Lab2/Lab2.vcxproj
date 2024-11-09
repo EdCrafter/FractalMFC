@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="ColoredFractalDecorator.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="CZoomDlg.h" />
     <ClInclude Include="FractalFacade.h" />
     <ClInclude Include="FractalFactory.h" />
     <ClInclude Include="FractalState.h" />
@@ -205,6 +206,7 @@
   <ItemGroup>
     <ClCompile Include="ColoredFractalDecorator.cpp" />
     <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CZoomDlg.cpp" />
     <ClCompile Include="FractalFacade.cpp" />
     <ClCompile Include="FractalFactory.cpp" />
     <ClCompile Include="FractalState.cpp" />

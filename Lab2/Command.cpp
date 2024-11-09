@@ -5,34 +5,34 @@
 // Implementation of ZoomInCommand
 int ZoomCommand::countFMove = 0;
 
-ZoomCommand::ZoomCommand(FractalFacade& facade, double dx, double dy, double scale = 1) : IFractalCommand(facade), deltaX(dx), deltaY(dy), scale(scale) {}
+ZoomCommand::ZoomCommand(FractalFacade& facade, double dx, double dy, double scale = 1, bool centered) : IFractalCommand(facade), deltaX(dx), deltaY(dy), scale(scale), centered(centered) {}
 void ZoomCommand::Execute() {
     if (facade.ZoomIn(scale)) {
-	    facade.Move(deltaX, deltaY, scale);
+	    facade.Move(deltaX, deltaY, scale,centered);
     }
     else {
-	    facade.Move(deltaX, deltaY, 1);
+	    facade.Move(deltaX, deltaY, 1,centered);
         countFMove++;
     }
 }
 
 void ZoomCommand::Undo() {
 	if (countFMove > 0) {
-	    facade.MoveOut(deltaX, deltaY, 1);
+	    facade.MoveOut(deltaX, deltaY, 1,centered);
         countFMove--;
 	}
 	else {
 		facade.ZoomOut(scale);
-		facade.MoveOut(deltaX, deltaY, scale);
+		facade.MoveOut(deltaX, deltaY, scale, centered);
 	}
 }
 
 
 // Implementation of MoveCommand constructor and methods
-MoveCommand::MoveCommand(FractalFacade& facade, double dx, double dy, double scale = 1) : IFractalCommand(facade), deltaX(dx), deltaY(dy), scale(scale) {}
+MoveCommand::MoveCommand(FractalFacade& facade, double dx, double dy, double scale = 1, bool centered = false) : IFractalCommand(facade), deltaX(dx), deltaY(dy), scale(scale), centered(centered) {}
 
 void MoveCommand::Execute() {
-	facade.Move(deltaX, deltaY, scale);
+	facade.Move(deltaX, deltaY, scale, centered);
 }
 
 void MoveCommand::Undo() {
@@ -46,11 +46,10 @@ CommandManager::CommandManager(int maxSize) : maxStackSize(maxSize) {}
 
 void CommandManager::ExecuteCommand(std::unique_ptr<IFractalCommand> command) {
     // Remove commands that are ahead of the current index to support proper Redo
+   
     if (currentCommandIndex < static_cast<int>(commandsHistory.size()) - 1) {
-        commandsHistory.erase(commandsHistory.begin() + currentCommandIndex + 1, commandsHistory.end());
+        commandsHistory.erase(commandsHistory.begin() + (currentCommandIndex + 1), commandsHistory.end());
     }
-
-    // Execute the command
     command->Execute();
 
     // Add to history

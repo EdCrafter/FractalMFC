@@ -24,6 +24,7 @@ public:
 	virtual std::unique_ptr<IFractal> Clone() const = 0; // prototype pattern
     virtual void Draw(CDC* pDC) = 0;
     virtual ~IFractal() = default;
+    virtual void Reset() = 0;
 };
 
 class KochFractal : public IFractal {
@@ -38,6 +39,7 @@ public:
     void DrawSnowflakeAndFill(CDC* pDC, CPoint vertex1, CPoint vertex2, CPoint vertex3, int depth);
     bool IsVisible(CDC* pDC,CPoint p);
     void DrawKochSnowflakeIterative(CDC* pDC, CPoint start, CPoint end, int depth, std::vector<CPoint>& points);
+	void Reset() override;
 };
 
 class MandelbrotFractal : public IFractal {
@@ -48,4 +50,5 @@ public:
 	std::unique_ptr<IFractal> Clone() const override;
     void Draw(CDC* pDC) override;
     int GetType() const override;
+	void Reset() override;
 };

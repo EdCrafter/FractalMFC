@@ -20,8 +20,9 @@ public:
 class ZoomCommand : public IFractalCommand {
 	double deltaX, deltaY, scale;
     static int countFMove;
+	bool centered;
 public:
-	ZoomCommand(FractalFacade& facade, double dx, double dy, double scale);
+	ZoomCommand(FractalFacade& facade, double dx, double dy, double scale, bool centered=0);
     void Execute() override;
     void Undo() override;
 };
@@ -31,9 +32,9 @@ public:
 class MoveCommand : public IFractalCommand {
 private:
     double deltaX, deltaY, scale;
-
+	bool centered;
 public:
-    MoveCommand(FractalFacade& facade,double dx, double dy,double scale);
+    MoveCommand(FractalFacade& facade,double dx, double dy,double scale,bool centered);
     void Execute() override;
     void Undo() override;
 };

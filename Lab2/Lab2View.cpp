@@ -13,6 +13,7 @@
 
 #include "Lab2Doc.h"
 #include "Lab2View.h"
+#include "CZoomDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -34,16 +35,17 @@ BEGIN_MESSAGE_MAP(CLab2View, CView)
     ON_WM_LBUTTONDBLCLK()
 	ON_COMMAND(ID_FRACTAL_KOCH, &CLab2View::OnFractalKoch)
 	ON_COMMAND(ID_FRACTAL_Mand, &CLab2View::OnFractalMand)
-	ON_COMMAND(ID_ToolBack, &CLab2View::OnToolback)
+	ON_COMMAND(ID_EDIT_UNDO, &CLab2View::OnEditUndo)
+	ON_COMMAND(ID_EDIT_REDO1, &CLab2View::OnEditRedo)
+	ON_COMMAND(ID_ZOOM_MORE, &CLab2View::OnZoomMore)
+	ON_COMMAND(ID_ZOOM_LESS, &CLab2View::OnZoomLess)
+	ON_COMMAND(ID_ZOOM_EDIT, &CLab2View::OnZoomEdit)
+	ON_COMMAND(ID_ZOOM_RESET, &CLab2View::OnZoomReset)
 END_MESSAGE_MAP()
 
 // CLab2View construction/destruction
 
-CLab2View::CLab2View() noexcept : facade(this)
-{
-	// TODO: add construction code here
-
-}
+CLab2View::CLab2View() noexcept : facade(this){}
 
 CLab2View::~CLab2View()
 {
@@ -62,11 +64,11 @@ BOOL CLab2View::PreCreateWindow(CREATESTRUCT& cs)
 
 void CLab2View::OnDraw(CDC* pDC)
 {
-
-	CLab2Doc* pDoc = GetDocument();
+	pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
+	
 	
 	/*CRgn clipRgn;
 	CreateRectRgn(0, 0, rect.Width(), rect.Height());
@@ -145,7 +147,8 @@ CLab2Doc* CLab2View::GetDocument() const // non-debug version is inline
 
 void CLab2View::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
-	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, point.x, point.y, 4));
+	pDoc = GetDocument();
+	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, point.x, point.y, pDoc->zoomFactor));
 	Invalidate();
 }
 
@@ -153,7 +156,6 @@ void CLab2View::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CLab2View::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-	
 }
 
 
@@ -170,8 +172,55 @@ void CLab2View::OnFractalMand()
 }
 
 
-void CLab2View::OnToolback()
+void CLab2View::OnEditUndo()
 {
 	commandManager.Undo();
+	Invalidate();
+}
+
+void CLab2View::OnEditRedo()
+{
+	commandManager.Redo();
+	Invalidate();
+}
+
+
+
+void CLab2View::OnZoomMore()
+{
+	pDoc = GetDocument();
+	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 0, 0, pDoc->zoomFactor,1));
+	Invalidate();
+}
+
+
+void CLab2View::OnZoomLess()
+{
+	pDoc = GetDocument();
+	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 0, 0, 1/ pDoc->zoomFactor,1));
+	Invalidate();
+}
+
+
+void CLab2View::OnZoomEdit()
+{
+	pDoc = GetDocument();
+	CZoomDlg zoomDialog;
+	int result = zoomDialog.DoModal();
+	if (result == IDOK) {
+		CLab2Doc* pDoc = GetDocument();
+		pDoc->zoomFactor = zoomDialog.getScale();
+	}
+	else {
+		CString str;
+		str.Format(L"result: %d", result);
+		AfxMessageBox(str);
+	}
+}
+
+
+void CLab2View::OnZoomReset()
+{
+	facade.Reset();
 	Invalidate();
 }

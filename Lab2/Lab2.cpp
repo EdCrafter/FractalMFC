@@ -169,7 +169,6 @@ protected:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
-public:
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -212,6 +211,5 @@ void CLab2App::SaveCustomState()
 }
 
 // CLab2App message handlers
-
 
 

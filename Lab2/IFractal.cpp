@@ -39,6 +39,16 @@ void KochFractal::DrawKochSnowflakeIterative(CDC* pDC, CPoint start, CPoint end,
 	}
 }
 
+void KochFractal::Reset()
+{
+	CRect rect;
+	pView->GetClientRect(&rect);
+	state->centerWX = rect.Width() / 2;
+	state->centerWY = rect.Height() / 2;
+	state->zoomFactor = 1;
+	state->depth = 5;
+}
+
 void KochFractal::DrawKochSnowflake(CDC* pDC, CPoint start, CPoint end, int depth, std::vector<CPoint>& points)
 {
 	if (depth == 0) {
@@ -114,13 +124,10 @@ void KochFractal::DrawSnowflakeAndFill(CDC* pDC, CPoint vertex1, CPoint vertex2,
 KochFractal::KochFractal(CLab2View* pView) : IFractal(pView)
 
 {
-    CLab2Doc* pDoc = pView->GetDocument();
-    if (pDoc) {
-		CRect rect;
-		pView->GetClientRect(&rect);
-		state->centerWX =  rect.Width() / 2;
-		state->centerWY =  rect.Height() / 2;
-    }
+	CRect rect;
+	pView->GetClientRect(&rect);
+	state->centerWX =  rect.Width() / 2;
+	state->centerWY =  rect.Height() / 2;
 	state->zoomFactor = 1;
 	state->depth = 5;
 	state->minDepth = 5;
@@ -310,14 +317,22 @@ IFractal::IFractal(const IFractal&)
 
 MandelbrotFractal::MandelbrotFractal(CLab2View* pView) : IFractal(pView)
 {
-	CLab2Doc* pDoc = pView->GetDocument();
-	if (pDoc) {
-		CRect rect;
-		pView->GetClientRect(&rect);
-		state->centerWX = rect.Width() / 2;
-		state->centerWY = rect.Height() /2;
-	}
+	CRect rect;
+	pView->GetClientRect(&rect);
+	state->centerWX = rect.Width() / 2;
+	state->centerWY = rect.Height() /2;
+	
 	state->zoomFactor = 1;
 	state->depth = 5;
 	state->maxDepth = 700;
+}
+
+void MandelbrotFractal::Reset()
+{
+	CRect rect;
+	pView->GetClientRect(&rect);
+	state->centerWX = rect.Width() / 2;
+	state->centerWY = rect.Height() / 2;
+	state->zoomFactor = 1;
+	state->depth = 5;
 }

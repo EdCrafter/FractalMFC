@@ -15,7 +15,7 @@ class CLab2View : public CView
 protected: // create from serialization only
 	CLab2View() noexcept;
 	DECLARE_DYNCREATE(CLab2View); 
-	
+	CLab2Doc* pDoc;
 	FractalFacade facade;
 	CommandManager commandManager;
 
@@ -58,7 +58,12 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnFractalKoch();
 	afx_msg void OnFractalMand();
-	afx_msg void OnToolback();
+	afx_msg void OnEditUndo();
+	afx_msg void OnEditRedo();
+	afx_msg void OnZoomMore();
+	afx_msg void OnZoomLess();
+	afx_msg void OnZoomEdit();
+	afx_msg void OnZoomReset();
 };
 
 #ifndef _DEBUG  // debug version in Lab2View.cpp
