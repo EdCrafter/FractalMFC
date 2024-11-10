@@ -41,13 +41,16 @@
 #define ID_ZOOM_MORE                    32806
 #define ID_ZOOM_LESS                    32807
 #define ID_ZOOM_EDIT                    32808
+#define ID_ScaleText                    32809
+#define ID_COLOR                        32810
+#define ID_COLORD                       32811
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        318
-#define _APS_NEXT_COMMAND_VALUE         32809
+#define _APS_NEXT_COMMAND_VALUE         32812
 #define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

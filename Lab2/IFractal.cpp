@@ -111,7 +111,7 @@ void KochFractal::DrawSnowflakeAndFill(CDC* pDC, CPoint vertex1, CPoint vertex2,
 	DrawKochSnowflakeIterative(pDC, vertex3, vertex1, depth, points);*/
 
 	if (points.size() > 2) {
-		CBrush brush(RGB(30, 150, 155));
+		CBrush brush(color);
 		CBrush* pOldBrush = pDC->SelectObject(&brush);
 
 		pDC->Polygon(points.data(), points.size());

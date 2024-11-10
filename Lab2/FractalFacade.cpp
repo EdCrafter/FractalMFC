@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "FractalFacade.h"
 #include "Lab2View.h"
+#include "ColoredFractalDecorator.h"
 
 // Метод для установки типа фрактала
 FractalFacade::FractalFacade(const FractalFacade& other) {
+	this->color = other.color;
 	this->pView = other.pView;
 	if (other.facadeFractal) {
 		this->facadeFractal = other.facadeFractal->Clone();
@@ -14,6 +16,7 @@ FractalFacade::FractalFacade(const FractalFacade& other) {
 }
 
 FractalFacade::FractalFacade(CLab2View* pView) {
+	this->color = RGB(0, 0, 0);
 	this->pView = pView;
     facadeFractal = nullptr;
 }
@@ -60,6 +63,11 @@ bool FractalFacade::ZoomIn(double scale) {
 	return false;
 }
 
+void FractalFacade::SetColor(COLORREF color)
+{
+	this->color = color;
+}
+
 // Метод для уменьшения масштаба
 bool FractalFacade::ZoomOut(double scale) {
 	if (FractalState::GetInstance()->depth > FractalState::GetInstance()->minDepth) {
@@ -101,6 +109,7 @@ void FractalFacade::Move(double dx, double dy,double scale=1,bool centered=false
 // Метод для отрисовки
 void FractalFacade::Draw(CDC* pDC) {
     if (facadeFractal) {
+		//AfxMessageBox(L"Draw");
         facadeFractal->Draw(pDC);
     }
 }
@@ -108,6 +117,26 @@ void FractalFacade::Draw(CDC* pDC) {
 void FractalFacade::Reset()
 {
 	facadeFractal->Reset();
+}
+
+void FractalFacade::SetFractalDecorator(FractalFacade::DecoratorType decoratorType)
+{
+	AfxMessageBox(L"Decorator");
+	if (decoratorType == DecoratorType::None) {
+		return;
+	}
+	else if (decoratorType == DecoratorType::Color) {
+		CString str;
+		str.Format(_T("Color: %d"), color);
+		AfxMessageBox(str);
+		//facadeFractal = std::make_unique<ColorDecorator>(facadeFractal, color);
+
+		//facadeFractal->Draw(pView->GetDC());
+	}
+	else if (decoratorType == DecoratorType::Blur) {
+		facadeFractal = std::make_unique<BlurDecorator>(std::move(facadeFractal));
+	}
+	//facadeFractal->Draw(pView->GetDC());
 }
 
 void FractalFacade::MoveOut(double dx, double dy, double scale,bool centered = false)
@@ -139,3 +168,4 @@ void FractalFacade::MoveOut(double dx, double dy, double scale,bool centered = f
 		return;
 	}
 }
+

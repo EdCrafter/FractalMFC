@@ -187,6 +187,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ColorDlg.h" />
     <ClInclude Include="ColoredFractalDecorator.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CZoomDlg.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ColorDlg.cpp" />
     <ClCompile Include="ColoredFractalDecorator.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CZoomDlg.cpp" />
@@ -234,6 +236,7 @@
     <Image Include="res\userimages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\Lab2.rc2" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

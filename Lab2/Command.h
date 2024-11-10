@@ -47,6 +47,16 @@ public:
 	void Undo() override;
 };
 
+class SetDecoratorCommand : public IFractalCommand {
+	FractalFacade::DecoratorType decoratorType;
+	COLORREF color;
+public:
+	SetDecoratorCommand(FractalFacade& facade, FractalFacade::DecoratorType decoratorType, COLORREF color);
+	void Execute() override;
+	void Undo() override;
+
+};
+
 class CommandManager {
     int maxStackSize;
     std::deque<std::unique_ptr<IFractalCommand>> commandsHistory;
@@ -58,4 +68,5 @@ public:
     void ExecuteCommand(std::unique_ptr<IFractalCommand> command);
     void Undo(); 
     void Redo();
+	void Clear();
 };

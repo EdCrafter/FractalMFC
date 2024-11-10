@@ -12,9 +12,12 @@ class IFractal {
 protected:
     CLab2View* pView;
 	FractalState* state = FractalState::GetInstance();
+    COLORREF color;
 public:
     IFractal() = default;
-    explicit IFractal(CLab2View* pView) : pView(pView) {}
+    explicit IFractal(CLab2View* pView) : pView(pView) {
+        color = RGB(30, 150, 155);
+    }
 
     IFractal(const IFractal&);
     IFractal& operator=(const IFractal&) = delete;
@@ -25,6 +28,9 @@ public:
     virtual void Draw(CDC* pDC) = 0;
     virtual ~IFractal() = default;
     virtual void Reset() = 0;
+	void SetColor(COLORREF color) {
+		this->color = color;
+	}
 };
 
 class KochFractal : public IFractal {
@@ -52,3 +58,4 @@ public:
     int GetType() const override;
 	void Reset() override;
 };
+

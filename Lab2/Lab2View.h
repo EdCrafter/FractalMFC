@@ -64,6 +64,7 @@ public:
 	afx_msg void OnZoomLess();
 	afx_msg void OnZoomEdit();
 	afx_msg void OnZoomReset();
+	afx_msg void OnColorChange();
 };
 
 #ifndef _DEBUG  // debug version in Lab2View.cpp

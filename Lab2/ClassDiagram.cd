@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CAboutDlg" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="CAboutDlg::__unnamed_enum_0402_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Lab2.cpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Lab2.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ColoredFractalDecorator" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAgAAAAAAAAAAAAAAAACEAAAAAAAAAAA=</HashCode>
+      <FileName>ColoredFractalDecorator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IFractalCommand" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAABAQAAAAAAAIAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ZoomCommand" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAQAAAAAAACCAAAQAAAAAAAAAEAIAAA=</HashCode>
+      <FileName>Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MoveCommand" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAQAAAAEAAACAAAQAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SetFractalTypeCommand" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAQAAAAAACAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommandManager" Collapsed="true">
+    <Position X="9.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAgAAAABAAAAAAAABABAAQAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Command.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CZoomDlg" Collapsed="true">
+    <Position X="11" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAABAAAAAAAAAgAAQAAAAAAAAAgAA=</HashCode>
+      <FileName>CZoomDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FractalFacade" Collapsed="true">
+    <Position X="12.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAICAIAABgAAAAAAAAAABAAEAAGQBAAAAAAAAAA=</HashCode>
+      <FileName>FractalFacade.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FractalFactory" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="FractalFactory::FractalType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>FractalFactory.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>FractalFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FractalState" Collapsed="true">
+    <Position X="9.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACgABQBgAACAAAAgIAAAAAA=</HashCode>
+      <FileName>FractalState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IFractal" Collapsed="true">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEABgAAgAAAAAAAAAAAAAEUAAAgAAAAABA=</HashCode>
+      <FileName>IFractal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MandelbrotFractal" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IFractal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KochFractal" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAIAAAFiAAAAAAAAAAAAAAAAEAAAAAAAAAABA=</HashCode>
+      <FileName>IFractal.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLab2App" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAEAAAAAAAABQAAAAAQAAAARAAACAAA=</HashCode>
+      <FileName>Lab2.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLab2Doc" Collapsed="true">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAACAAAgCAgASggAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Lab2Doc.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CLab2View" Collapsed="true">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EDAAICAEAIBAAAAIGABAgABEgCAAAAAQAAgJAAQIgQA=</HashCode>
+      <FileName>Lab2View.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMainFrame" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAEACAAAiAAAgCEAAgAgAABAAAAAAhA=</HashCode>
+      <FileName>MainFrm.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

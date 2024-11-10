@@ -76,6 +76,12 @@ void CommandManager::Redo() {
     }
 }
 
+void CommandManager::Clear()
+{
+	commandsHistory.clear();
+	currentCommandIndex = -1;
+}
+
 SetFractalTypeCommand::SetFractalTypeCommand(FractalFacade& facade, FractalFactory::FractalType type) : IFractalCommand(facade)
 {
 	this->type = type;
@@ -90,3 +96,23 @@ void SetFractalTypeCommand::Undo()
 {
 	facade.SetFractalType(FractalFactory::FractalType::Invalid);
 }
+
+SetDecoratorCommand::SetDecoratorCommand(FractalFacade& facade, FractalFacade::DecoratorType decoratorType, COLORREF color) : IFractalCommand(facade)
+{
+	this->decoratorType = decoratorType;
+	this->color = color;
+}
+
+void SetDecoratorCommand::Execute()
+{
+	AfxMessageBox(L"SetDecoratorCommand::Execute()");
+	facade.SetColor(color);
+	facade.SetFractalDecorator(decoratorType);
+}
+
+void SetDecoratorCommand::Undo()
+{
+	facade.SetFractalDecorator(FractalFacade::DecoratorType::None);
+	facade.SetColor(RGB(0, 0, 0));
+}
+

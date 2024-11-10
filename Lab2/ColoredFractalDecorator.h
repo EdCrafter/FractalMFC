@@ -3,20 +3,59 @@
 #include "IFractal.h"
 
 #include <memory>
+//
+//class ColorDecorator : public IFractal {
+//private:
+//    std::unique_ptr<IFractal> fractal;
+//    COLORREF color;
+//
+//public:
+//	ColorDecorator(std::unique_ptr<IFractal> fractal, COLORREF color = RGB(130, 150, 155))
+//        :  color(color) {
+//		this->fractal = std::move(fractal);
+//    }
+//
+//    int GetType() const override {
+//        return fractal->GetType();
+//    }
+//
+//    std::unique_ptr<IFractal> Clone() const override {
+//        return std::make_unique<ColorDecorator>(fractal->Clone(), color);
+//    }
+//
+//    void Draw(CDC* pDC) override {
+//		CString str;
+//		str.Format(_T("Color2=%d"), color);
+//		AfxMessageBox(str);
+//		fractal->SetColor(color);
+//        fractal->Draw(pDC);
+//    }
+//    void Reset() override {
+//        fractal->Reset();
+//    }
+//};
 
-class ColoredFractalDecorator : public IFractal {
+class BlurDecorator : public IFractal {
 private:
     std::unique_ptr<IFractal> fractal;
-    COLORREF color;
 
 public:
-    ColoredFractalDecorator(std::unique_ptr<IFractal> f, COLORREF c)
-        : fractal(std::move(f)), color(c) {}
+    BlurDecorator(std::unique_ptr<IFractal> fractal)
+        : fractal(std::move(fractal)) {}
 
-    void Draw(CDC* pDC) override {
-        CBrush brush(color);
-        pDC->SelectObject(&brush);
-        fractal->Draw(pDC);
-        pDC->SelectStockObject(NULL_BRUSH);
+    int GetType() const override {
+        return fractal->GetType();
+    }
+
+    std::unique_ptr<IFractal> Clone() const override {
+        return std::make_unique<BlurDecorator>(fractal->Clone());
+    }
+
+    void Draw(CDC* pDC) override { 
+        pDC->SetGraphicsMode(GM_ADVANCED);
+        fractal->Draw(pDC); 
+    }
+    void Reset() override {
+        fractal->Reset();
     }
 };

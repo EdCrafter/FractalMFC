@@ -14,6 +14,7 @@
 #include "Lab2Doc.h"
 #include "Lab2View.h"
 #include "CZoomDlg.h"
+#include "ColorDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +42,7 @@ BEGIN_MESSAGE_MAP(CLab2View, CView)
 	ON_COMMAND(ID_ZOOM_LESS, &CLab2View::OnZoomLess)
 	ON_COMMAND(ID_ZOOM_EDIT, &CLab2View::OnZoomEdit)
 	ON_COMMAND(ID_ZOOM_RESET, &CLab2View::OnZoomReset)
+	ON_COMMAND(ID_COLORD, &CLab2View::OnColorChange)
 END_MESSAGE_MAP()
 
 // CLab2View construction/destruction
@@ -73,7 +75,7 @@ void CLab2View::OnDraw(CDC* pDC)
 	/*CRgn clipRgn;
 	CreateRectRgn(0, 0, rect.Width(), rect.Height());
 	pDC->SelectClipRgn(&clipRgn);*/
-
+	//AfxMessageBox(L"Drawing");
 	facade.Draw(pDC);
 }
 
@@ -188,6 +190,7 @@ void CLab2View::OnEditRedo()
 
 void CLab2View::OnZoomMore()
 {
+	
 	pDoc = GetDocument();
 	commandManager.ExecuteCommand(std::make_unique<ZoomCommand>(facade, 0, 0, pDoc->zoomFactor,1));
 	Invalidate();
@@ -222,5 +225,22 @@ void CLab2View::OnZoomEdit()
 void CLab2View::OnZoomReset()
 {
 	facade.Reset();
+	commandManager.Clear();
 	Invalidate();
+}
+
+
+
+
+
+void CLab2View::OnColorChange()
+{
+	CColorDlg colorDialog;
+	if (colorDialog.DoModal() == IDOK) {
+		CString str;
+		str.Format(L"Color: %d", colorDialog.m_color);
+		AfxMessageBox(str);
+		commandManager.ExecuteCommand(std::make_unique<SetDecoratorCommand>(facade, FractalFacade::Blur, colorDialog.m_color));
+		Invalidate();
+	}
 }
