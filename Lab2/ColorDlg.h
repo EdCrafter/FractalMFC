@@ -21,6 +21,8 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+	CMFCColorButton m_colorButton;
 public:
 	COLORREF m_color;
+	afx_msg void OnBnClickedOk();
 };

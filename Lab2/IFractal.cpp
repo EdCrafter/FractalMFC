@@ -141,20 +141,18 @@ int KochFractal::GetType() const
 
 KochFractal::KochFractal(const KochFractal&)
 {
-	//AfxMessageBox(L"Copy constructor");
 	this->pView = pView;
 	this->state = state;
 }
 
-std::unique_ptr<IFractal> KochFractal::Clone() const
-{
-	//AfxMessageBox(L"Clone");
-	return std::make_unique<KochFractal>(*this);
-}
+//std::unique_ptr<IFractal> KochFractal::Clone() const
+//{
+//	AfxMessageBox(L"Clone koch");
+//	return std::make_unique<KochFractal>(*this);
+//}
 
 void KochFractal::Draw(CDC* pDC)
 {
-	//AfxMessageBox(L"Draw");
     CRect rect;
     pView->GetClientRect(&rect);
     
@@ -250,7 +248,7 @@ void MandelbrotFractal::Draw(CDC* pDC)
 	// The rest of the Mandelbrot drawing code
 	std::vector<unsigned char> pixels(rect.Width() * rect.Height() * 4); // RGBA array
 
-#pragma omp parallel for
+//#pragma omp parallel for
 	for (int py = 0; py < rect.Height(); ++py) {
 		for (int px = 0; px < rect.Width(); ++px) {
 			double x0 = minX + px * scaleX;
@@ -304,10 +302,10 @@ int MandelbrotFractal::GetType() const
     return 1;
 }
 
-std::unique_ptr<IFractal> MandelbrotFractal::Clone() const
-{
-	return std::make_unique<MandelbrotFractal>(*this);
-}
+//std::unique_ptr<IFractal> MandelbrotFractal::Clone() const
+//{
+//	return std::make_unique<MandelbrotFractal>(*this);
+//}
 
 IFractal::IFractal(const IFractal&)
 {

@@ -8,7 +8,7 @@ class FractalFacade;
 
 class IFractalCommand {
 protected:
-	FractalFacade facade;
+	FractalFacade& facade;
 public:
 	IFractalCommand(FractalFacade& facade) : facade(facade) {}
     virtual void Execute() = 0;
@@ -60,11 +60,10 @@ public:
 class CommandManager {
     int maxStackSize;
     std::deque<std::unique_ptr<IFractalCommand>> commandsHistory;
-    int currentCommandIndex = -1;
+    int currentCommandIndex;
 
 public:
-    CommandManager() = default;
-    CommandManager(int maxStackSize);
+	CommandManager(int maxStackSize=20);
     void ExecuteCommand(std::unique_ptr<IFractalCommand> command);
     void Undo(); 
     void Redo();

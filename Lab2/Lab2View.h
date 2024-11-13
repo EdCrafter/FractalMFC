@@ -9,7 +9,7 @@
 
 
 
-class CLab2View : public CView
+class CLab2View : public CView //, public CScrollView
 {
 
 protected: // create from serialization only

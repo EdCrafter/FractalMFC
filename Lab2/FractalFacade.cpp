@@ -7,12 +7,12 @@
 FractalFacade::FractalFacade(const FractalFacade& other) {
 	this->color = other.color;
 	this->pView = other.pView;
-	if (other.facadeFractal) {
-		this->facadeFractal = other.facadeFractal->Clone();
+	/*if (other.facadeFractal) {
+		this->facadeFractal = std::move(other.facadeFractal->Clone());
 	}
 	else {
 		this->facadeFractal = nullptr;
-	}
+	}*/
 }
 
 FractalFacade::FractalFacade(CLab2View* pView) {
@@ -109,7 +109,6 @@ void FractalFacade::Move(double dx, double dy,double scale=1,bool centered=false
 // Метод для отрисовки
 void FractalFacade::Draw(CDC* pDC) {
     if (facadeFractal) {
-		//AfxMessageBox(L"Draw");
         facadeFractal->Draw(pDC);
     }
 }
@@ -121,17 +120,11 @@ void FractalFacade::Reset()
 
 void FractalFacade::SetFractalDecorator(FractalFacade::DecoratorType decoratorType)
 {
-	AfxMessageBox(L"Decorator");
 	if (decoratorType == DecoratorType::None) {
 		return;
 	}
 	else if (decoratorType == DecoratorType::Color) {
-		CString str;
-		str.Format(_T("Color: %d"), color);
-		AfxMessageBox(str);
-		//facadeFractal = std::make_unique<ColorDecorator>(facadeFractal, color);
-
-		//facadeFractal->Draw(pView->GetDC());
+		facadeFractal = std::make_unique<ColorDecorator>(std::move(facadeFractal), color);
 	}
 	else if (decoratorType == DecoratorType::Blur) {
 		facadeFractal = std::make_unique<BlurDecorator>(std::move(facadeFractal));

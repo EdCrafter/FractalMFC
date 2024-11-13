@@ -14,7 +14,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	double zoomFactor = 4.0; // Уровень зума (начальное значение)
+	double zoomFactor; // Уровень зума (начальное значение)
 
 // Operations
 public:

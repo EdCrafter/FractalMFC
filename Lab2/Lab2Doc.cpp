@@ -30,7 +30,7 @@ END_MESSAGE_MAP()
 
 CLab2Doc::CLab2Doc() noexcept
 {
-	
+	zoomFactor = 4;
 }
 
 CLab2Doc::~CLab2Doc()

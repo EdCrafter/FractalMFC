@@ -12,7 +12,7 @@ public:
     enum FractalType {
 		Invalid = -1,
         Koch,
-        Mandelbrot
+        Mandelbrot,
     };
 
     static std::unique_ptr<IFractal> CreateFractal(FractalType type,CLab2View* pView);

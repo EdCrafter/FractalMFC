@@ -47,7 +47,9 @@ END_MESSAGE_MAP()
 
 // CLab2View construction/destruction
 
-CLab2View::CLab2View() noexcept : facade(this){}
+CLab2View::CLab2View() noexcept : facade(this), commandManager()
+{
+}
 
 CLab2View::~CLab2View()
 {
@@ -70,12 +72,6 @@ void CLab2View::OnDraw(CDC* pDC)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-	
-	
-	/*CRgn clipRgn;
-	CreateRectRgn(0, 0, rect.Width(), rect.Height());
-	pDC->SelectClipRgn(&clipRgn);*/
-	//AfxMessageBox(L"Drawing");
 	facade.Draw(pDC);
 }
 
@@ -214,11 +210,6 @@ void CLab2View::OnZoomEdit()
 		CLab2Doc* pDoc = GetDocument();
 		pDoc->zoomFactor = zoomDialog.getScale();
 	}
-	else {
-		CString str;
-		str.Format(L"result: %d", result);
-		AfxMessageBox(str);
-	}
 }
 
 
@@ -237,10 +228,7 @@ void CLab2View::OnColorChange()
 {
 	CColorDlg colorDialog;
 	if (colorDialog.DoModal() == IDOK) {
-		CString str;
-		str.Format(L"Color: %d", colorDialog.m_color);
-		AfxMessageBox(str);
-		commandManager.ExecuteCommand(std::make_unique<SetDecoratorCommand>(facade, FractalFacade::Blur, colorDialog.m_color));
+		commandManager.ExecuteCommand(std::make_unique<SetDecoratorCommand>(facade, FractalFacade::Color, colorDialog.m_color));
 		Invalidate();
 	}
 }
