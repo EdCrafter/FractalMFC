@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(CZoomDlg, CDialogEx)
 
 CZoomDlg::CZoomDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_ZOOMDIALOG, pParent)
-	, m_scale(0)
+	, m_scale(1)
 {
 
 }

@@ -2,6 +2,7 @@
 // Strategy pattern
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "FractalState.h"
 

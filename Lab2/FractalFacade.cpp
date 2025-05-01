@@ -3,7 +3,6 @@
 #include "Lab2View.h"
 #include "ColoredFractalDecorator.h"
 
-// Метод для установки типа фрактала
 FractalFacade::FractalFacade(const FractalFacade& other) {
 	this->color = other.color;
 	this->pView = other.pView;
@@ -106,11 +105,23 @@ void FractalFacade::Move(double dx, double dy,double scale=1,bool centered=false
 }
 
 
-// Метод для отрисовки
 void FractalFacade::Draw(CDC* pDC) {
     if (facadeFractal) {
         facadeFractal->Draw(pDC);
     }
+	else {
+		CFont font;
+		font.CreatePointFont(400, L"Arial");
+		CFont* pOldFont = pDC->SelectObject(&font);
+		CString text = L"FRACTALS";
+		CSize textSize = pDC->GetTextExtent(text);
+		CRect clientRect;
+		GetClientRect(pDC->GetWindow()->GetSafeHwnd(),&clientRect);
+		int x = (clientRect.Width() - textSize.cx) / 2;
+		int y = (clientRect.Height() - textSize.cy) / 2;
+		pDC->TextOutW(x, y, text);
+		pDC->SelectObject(pOldFont);
+	}
 }
 
 void FractalFacade::Reset()

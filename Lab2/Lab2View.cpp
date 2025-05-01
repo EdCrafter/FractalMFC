@@ -209,6 +209,9 @@ void CLab2View::OnZoomEdit()
 	if (result == IDOK) {
 		CLab2Doc* pDoc = GetDocument();
 		pDoc->zoomFactor = zoomDialog.getScale();
+		if (!pDoc->zoomFactor) {
+			pDoc->zoomFactor = 1;
+		}
 	}
 }
 

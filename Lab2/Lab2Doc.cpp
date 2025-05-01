@@ -42,9 +42,6 @@ BOOL CLab2Doc::OnNewDocument()
 	if (!CDocument::OnNewDocument())
 		return FALSE;
 
-	// TODO: add reinitialization code here
-	// (SDI documents will reuse this document)
-
 	return TRUE;
 }
 
